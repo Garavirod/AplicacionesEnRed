@@ -20,71 +20,67 @@ import java.net.Socket;
  * @author rodrigo
  */
 public class Server {
-    public static void main(String[] args) {
-        ServidorArchivo();
-    }
+     public static void main(String[] args){
+        try{
+            //creamos el socket
+            ServerSocket s = new ServerSocket(7010);
+            //iniciamos el ciclo infinito
+            for(;;){
+                //esperamos una conexion
+                System.out.println("esperando conexion");
+                Socket cl = s.accept();
+                System.out.println("conexion establecida desde: " + cl.getInetAddress()+":"+cl.getPort());
+                DataInputStream dis = new DataInputStream(cl.getInputStream());
+                byte[] b = new byte[1024];
 
-    public static void ServidorArchivo() {
-        try {
-            /* PUERTO EN EL QUE ESCUCHA PETICIONES */
-            ServerSocket socketServidor = new ServerSocket(9002);
-            System.out.println("Esperando cliente...");
+                int numArchivos = dis.readInt();
 
-            while (true) {
-                /* HASTA QUE RECIBA ALGUNA PETICION DEL CLIENTE */
-                Socket socketCliente = socketServidor.accept();
-                System.out.println(
-                        "Conexion establecida desde " + socketCliente.getInetAddress() + ":" + socketCliente.getPort());
+                System.out.println("numero de archivos: "+numArchivos);
 
-                /* ESTABLECEMOS EL CANAL DE ENTRADA DE TIPO BUFFERED */
-                BufferedReader in = new BufferedReader(new InputStreamReader(socketCliente.getInputStream()));
-                int cantidad = Integer.parseInt(in.readLine());
-                System.out.print("\nCantidad de archivos que se recibien: ");
-                System.out.print(cantidad + "\n");
 
-                for (int i = 0; i < cantidad; i++) {
-
-                    /* ESTABLECEMOS EL CANAL DE ENTRADA DE TIPO DATA */
-                    DataInputStream entrada = new DataInputStream(socketCliente.getInputStream());
-                    byte[] b = new byte[1024];
-                    String nombre = entrada.readUTF();
-                    System.out.println("Recibiendo el archivo: " + nombre);
-                    long tam = entrada.readLong();
-
-                    /* ESTABLECEMOS EL CANAL DE SALIDA DE TIPO DATA */
-                    DataOutputStream salida = new DataOutputStream(new FileOutputStream(nombre));
-
-                    /* SECCION PARA RECIBIR EL ARCHIVO */
-                    long recibido = 0;
-                    int n = 0, porcentaje = 0;
-
-                    while (recibido < tam) {
-                        n = entrada.read(b);
-                        salida.write(b, 0, n);
-                        salida.flush();
-
-                        /* PORCENTAJE */
-                        recibido += n;
-                        porcentaje = (int) (recibido * 100 / tam);
-                        System.out.println("Recibido: " + porcentaje + "%\r");
+                int iter;
+                String[] nombres = new String[numArchivos];
+                Long[] tams = new Long[numArchivos];
+                DataOutputStream dos = new DataOutputStream(cl.getOutputStream());
+                for(iter = 0; iter < numArchivos; iter++){
+                    nombres[iter] = dis.readUTF();
+                    System.out.println("recibimos el archivo: "+nombres[iter]);
+                    tams[iter] = dis.readLong();
+                } 
+                //DataOutputStream dos = new DataOutputStream(new FileOutputStream(nombres[0]));
+                //seccion para recibir el archivo
+                Long recibidos;
+                int n=0,porcentaje;
+                iter = 0;
+                for(; iter < numArchivos; iter++){
+                    recibidos = 0l;
+                    dos = new DataOutputStream(new FileOutputStream(nombres[iter]));
+                    while(recibidos < tams[iter]){
+                        if(tams[iter] - recibidos < 1024){
+                            n = dis.read(b,0,(int)(tams[iter]-recibidos));
+                        }
+                        else{
+                            n = dis.read(b);
+                        }
+                        dos.write(b,0,n);
+                                
+                        
+                        dos.flush();
+                        //System.out.println("--------------\nbytes: "+n+" "+nombres[iter]+"\n-----------------");
+                        
+                        recibidos = recibidos+n;
+                        porcentaje = (int)(recibidos*100/tams[iter]);
+                        System.out.print("Recibido: " + porcentaje +"%\n");
                     }
-
-                    /* CONCLUIMOS CON EL ARCHVIO i */
-                    System.out.println("Archivo " + nombre + " recibido.");
-
-                    /* SOLO CERRAMOS CUANDO SE RECIBAN TODOS */
-                    if (i == cantidad - 1) {
-                        salida.close();
-                        entrada.close();
-                    }
+                    dos.close();
                 }
-                in.close();
-                socketCliente.close();
+                System.out.print("\n\narchivo recibido\n");
+                dos.close();
+                dis.close();
+                cl.close();
             }
-        } catch (
-
-        Exception e) {
+        }catch(Exception e){
             e.printStackTrace();
-        }
-    }
+        }//try-catch
+    }//main
 }
