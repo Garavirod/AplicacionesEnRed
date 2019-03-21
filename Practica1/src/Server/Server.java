@@ -7,13 +7,8 @@
 
 package Server;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
+import java.io.*;
 
 /**
  *
@@ -37,13 +32,13 @@ public class Server {
                 int numArchivos = dis.readInt();
                 System.out.println("Numero de archivos a mandar: "+numArchivos);
 
-                int iter;
+                int iter; //Variable iteradora
                 String[] nombres = new String[numArchivos];
                 Long[] tams = new Long[numArchivos];
                 DataOutputStream dos = new DataOutputStream(cl.getOutputStream());
                 for(iter = 0; iter < numArchivos; iter++){
                     nombres[iter] = dis.readUTF();
-                    System.out.println("Recibimos el archivo: "+nombres[iter]);
+                    System.out.println("Archivos a recibir: "+nombres[iter]);
                     tams[iter] = dis.readLong();
                 } 
                 //Sección para recibir el archivo
@@ -67,7 +62,7 @@ public class Server {
                     }
                     dos.close();
                 }
-                System.out.print("\n\n-*-*-*-!Archivo recibido!-*-*-*\n\n");
+                System.out.print("\n\n-*-*-*-!Archivos recibidos correctamente!-*-*-*\n\n");
                 dos.close();
                 dis.close();
                 cl.close();
