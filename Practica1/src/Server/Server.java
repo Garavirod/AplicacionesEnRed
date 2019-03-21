@@ -22,21 +22,20 @@ import java.net.Socket;
 public class Server {
      public static void main(String[] args){
         try{
-            //creamos el socket
-            ServerSocket s = new ServerSocket(7010);
-            //iniciamos el ciclo infinito
-            for(;;){
-                //esperamos una conexion
-                System.out.println("esperando conexion");
+            //creamos el socket servidor
+            ServerSocket s = new ServerSocket(9010);
+            //iniciamos el ciclo infinito del servidor, simpre estará en espera de peticiones
+            while(true){
+                //Esperamos una conexion
+                System.out.println("Esperando conexion...");
                 Socket cl = s.accept();
-                System.out.println("conexion establecida desde: " + cl.getInetAddress()+":"+cl.getPort());
+                System.out.println("Se estableció una conexion desde: [ " + cl.getInetAddress()+":"+cl.getPort()+" ]");
                 DataInputStream dis = new DataInputStream(cl.getInputStream());
                 byte[] b = new byte[1024];
-
+                
+                //Cantidad de archivos que mandaremos
                 int numArchivos = dis.readInt();
-
-                System.out.println("numero de archivos: "+numArchivos);
-
+                System.out.println("Numero de archivos a mandar: "+numArchivos);
 
                 int iter;
                 String[] nombres = new String[numArchivos];
@@ -44,11 +43,10 @@ public class Server {
                 DataOutputStream dos = new DataOutputStream(cl.getOutputStream());
                 for(iter = 0; iter < numArchivos; iter++){
                     nombres[iter] = dis.readUTF();
-                    System.out.println("recibimos el archivo: "+nombres[iter]);
+                    System.out.println("Recibimos el archivo: "+nombres[iter]);
                     tams[iter] = dis.readLong();
                 } 
-                //DataOutputStream dos = new DataOutputStream(new FileOutputStream(nombres[0]));
-                //seccion para recibir el archivo
+                //Sección para recibir el archivo
                 Long recibidos;
                 int n=0,porcentaje;
                 iter = 0;
@@ -56,31 +54,26 @@ public class Server {
                     recibidos = 0l;
                     dos = new DataOutputStream(new FileOutputStream(nombres[iter]));
                     while(recibidos < tams[iter]){
-                        if(tams[iter] - recibidos < 1024){
-                            n = dis.read(b,0,(int)(tams[iter]-recibidos));
-                        }
-                        else{
+                        if(tams[iter] - recibidos < 1024)
+                            n = dis.read(b,0,(int)(tams[iter]-recibidos));                        
+                        else
                             n = dis.read(b);
-                        }
-                        dos.write(b,0,n);
-                                
                         
-                        dos.flush();
-                        //System.out.println("--------------\nbytes: "+n+" "+nombres[iter]+"\n-----------------");
-                        
+                        dos.write(b,0,n);                                                        
+                        dos.flush();                                                
                         recibidos = recibidos+n;
                         porcentaje = (int)(recibidos*100/tams[iter]);
                         System.out.print("Recibido: " + porcentaje +"%\n");
                     }
                     dos.close();
                 }
-                System.out.print("\n\narchivo recibido\n");
+                System.out.print("\n\n-*-*-*-!Archivo recibido!-*-*-*\n\n");
                 dos.close();
                 dis.close();
                 cl.close();
             }
         }catch(Exception e){
             e.printStackTrace();
-        }//try-catch
-    }//main
+        }
+    }
 }
