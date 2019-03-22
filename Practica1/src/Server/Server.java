@@ -52,7 +52,7 @@ public class Server {
                         if(tams[iter] - recibidos < 1024)
                             n = dis.read(b,0,(int)(tams[iter]-recibidos));                        
                         else
-                            n = dis.read(b);
+                            n = dis.read(b); //Leemos numero de bytes de flujo de entrada
                         
                         dos.write(b,0,n);                                                        
                         dos.flush();                                                

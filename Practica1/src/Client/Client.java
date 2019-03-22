@@ -35,25 +35,24 @@ public class Client {
             jf.setMultiSelectionEnabled(true);
             
             int r = jf.showOpenDialog(null);
-            if(r == JFileChooser.APPROVE_OPTION){
+            if(r == JFileChooser.APPROVE_OPTION){ //cuando el usuario da al boton de aceptar
                 //se obtiene arreglo con las referencias de los archivo seleccionados
-                File[] f = jf.getSelectedFiles();
-                String[] archivos = new String[f.length];
+                File[] f = jf.getSelectedFiles(); //Arreglo de archovos seleccionados
+                String[] archivos = new String[f.length]; //Arreglo de nombres de los archivos
                 String nombre;
-                long[] tams = new long[f.length];
+                long[] tams = new long[f.length]; //Arreglo del tamaño de cada archivo
                 
 
                 //obtencion de flujos de datos
-                DataOutputStream dos = new DataOutputStream(cl.getOutputStream());
-                //se envia al servidor la cantidad de archivos que se enviaran
-                dos.writeInt(f.length);
-                dos.flush();
+                DataOutputStream dos = new DataOutputStream(cl.getOutputStream()); //Flujo de datos de salida                
+                dos.writeInt(f.length); //se envia al servidor la cantidad de archivos que se enviaran
+                dos.flush(); //VAciamos el buffer de salida sin cerra la conexion
                 DataInputStream dis = new DataInputStream(cl.getInputStream());
-                int iter;
+                int iter; //Variable iteradora
                 for(iter = 0; iter < f.length;iter++){
-                    archivos[iter] = f[iter].getAbsolutePath();
-                    nombre = f[iter].getName();
-                    tams[iter] = f[iter].length();
+                    archivos[iter] = f[iter].getAbsolutePath(); //De cada archivo obtenemos su ruta absoluta
+                    nombre = f[iter].getName(); //Alamacenamos su nombre
+                    tams[iter] = f[iter].length(); //Obtenemos su tamaño
                     System.out.println("Path: "+archivos[iter]+" nombre: "+nombre+" tamaño: "+tams[iter]);
                     dos.writeUTF(nombre);
                     dos.flush();
@@ -69,13 +68,16 @@ public class Client {
                 
                 for(;iter<tams.length;iter++){
                     enviados = 0l;
+                    //Leemos datos de tipo primitivo del flujo de entrada
                     dis = new DataInputStream(new FileInputStream(archivos[iter]));
                     while(enviados < tams[iter]){
                         if(tams[iter]-enviados < 1024)
                             n = dis.read(b,0,(int)(tams[iter]-enviados));                        
                         else
                             n = dis.read(b);
-                        
+                        //b: buffer en en el que se leen los datos, 
+                        //0: inicio en la matriz de destino, 
+                        //n: numero maximo de bytes leidos
                         dos.write(b,0,n);
                         dos.flush();
                         enviados = enviados + n;
@@ -85,7 +87,7 @@ public class Client {
                     System.out.println("-----------FIN DE ARCHIVO----------");
                 }
 
-                System.out.print("\n\nA*|*|*|----rchivos Enviados----|*|*|*");
+                System.out.print("\n\n*|*|*|----Archivos Enviados----|*|*|*");
                 dos.close();
                 dis.close();
                 cl.close();
