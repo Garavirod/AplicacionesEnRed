@@ -61,7 +61,7 @@ public class Client {
                     
                 }
 
-                byte[] b = new byte[1024];
+                byte[] b = new byte[4096];
                 iter = 0;
                 long enviados;
                 int porcentaje,n;

@@ -18,7 +18,7 @@ public class Server {
      public static void main(String[] args){
         try{
             //creamos el socket servidor
-            ServerSocket s = new ServerSocket(9010);
+            ServerSocket s = new ServerSocket(9013);
             //iniciamos el ciclo infinito del servidor, simpre estará en espera de peticiones
             while(true){
                 //Esperamos una conexion
@@ -26,7 +26,7 @@ public class Server {
                 Socket cl = s.accept();
                 System.out.println("Se estableció una conexion desde: [ " + cl.getInetAddress()+":"+cl.getPort()+" ]");
                 DataInputStream dis = new DataInputStream(cl.getInputStream());
-                byte[] b = new byte[1024];
+                byte[] b = new byte[2048];
                 
                 //Cantidad de archivos que mandaremos
                 int numArchivos = dis.readInt();
