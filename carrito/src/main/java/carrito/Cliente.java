@@ -192,7 +192,7 @@ public class Cliente extends javax.swing.JFrame {
         TextPrecio.setText("Costo");
 
         jButton5.setBackground(new java.awt.Color(204, 255, 204));
-        jButton5.setText("Confirmar");
+        jButton5.setText("VER CARRITO");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
