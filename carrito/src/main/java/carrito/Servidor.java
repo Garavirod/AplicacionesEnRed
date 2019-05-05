@@ -150,7 +150,7 @@ public class Servidor {
     public static void main(String[] args) {
         try{
             System.out.println("Servicio iniciado");
-            String host = "192.168.1.74";
+            String host = "10.100.70.206";
             int pto = 9090;
             String info;
             int num = 0;

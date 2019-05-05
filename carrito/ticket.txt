@@ -1,8 +1,4 @@
-PS4_SLIM	Precio: 7000.0
-
-N_SWITCH	Precio: 8000.0
-
 XBOXONE_S	Precio: 6000.0
 
-Total:21000.0
-Tue Apr 02 22:56:09 CST 2019
+Total:6000.0
+Tue Apr 09 15:21:45 CDT 2019

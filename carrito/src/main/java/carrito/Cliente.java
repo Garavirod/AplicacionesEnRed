@@ -10,11 +10,11 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-
+//192.168.1.74
 public class Cliente extends javax.swing.JFrame {
 
     Ticket abrir = new Ticket();
-    String host = "192.168.1.74";
+    String host = "10.100.70.206";
     int pto = 1234;
     int cont = 0;
     float total = 0;
