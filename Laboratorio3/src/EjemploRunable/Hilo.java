@@ -6,6 +6,9 @@
 package EjemploRunable;
 
 import static java.lang.Math.sqrt;
+import static java.lang.Thread.sleep;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,8 +26,14 @@ public class Hilo implements Runnable {
                 if (i % j == 0)//evalua la condicion de que el residuo de dividir i entre j es igual a cero                
                     div++;// si la condicion anterior se cumple entonces entonces suma 1 a esta variable                
             }
-            if (div <= 1)//Si existe más de un divisor, entonces el número no es primo                          
+            if (div <= 1){//Si existe más de un divisor, entonces el número no es primo                          
                 System.out.println(i);// imprime que cierto numero es primo            
+                try {
+                    sleep(500);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Hilo.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
 }

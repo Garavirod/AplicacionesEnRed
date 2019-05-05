@@ -5,6 +5,9 @@
  */
 package EjemploThread;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author rodrigo
@@ -15,7 +18,13 @@ public class Hilo extends Thread{
     }
     
     public void run(){
-        for (char i = 'A'; i<='Z'; i++)
-            System.out.println(i);   
+        for (char i = 'A'; i<='Z'; i++){
+            System.out.println(i);
+            try {
+                sleep(500);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Hilo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }
